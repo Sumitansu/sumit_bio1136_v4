@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DoRaemon's Place</title>
+  <link rel="icon" type="image/png" href="logo for speedabraker.jpg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&display=swap');
+    
+    :root {
+      --primary: #00f0ff;
+      --secondary: #ff00f0;
+      --bg: #0a0a15;
+      --text: #ffffff;
+      --glass: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --glass-highlight: rgba(255, 255, 255, 0.15);
+      --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      --nav-bg: rgba(10, 10, 21, 0.7);
+    }
+    
+    /* Light mode variables */
+    [data-theme="light"] {
+      --primary: #0066ff;
+      --secondary: #ff3366;
+      --bg: #f5f5ff;
+      --text: #0a0a15;
+      --glass: rgba(0, 0, 0, 0.05);
+      --glass-border: rgba(0, 0, 0, 0.1);
+      --glass-highlight: rgba(0, 0, 0, 0.15);
+      --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      --nav-bg: rgba(245, 245, 255, 0.9);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background 0.5s ease, color 0.3s ease;
+    }
+    
+    #particles-container {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.7;
+    }
+    
+    /* Background selector */
+    .background-selector {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+      display: flex;
+      gap: 10px;
+    }
+    
+    .bg-option {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid var(--glass-border);
+      transition: transform 0.3s;
+    }
+    
+    .bg-option:hover {
+      transform: scale(1.1);
+    }
+    
+    /* Progress bar */
+    .progress-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: transparent;
+      z-index: 1000;
+    }
+    
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      width: 0%;
+      transition: width 0.1s;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      background: var(--nav-bg);
+      border-bottom: 1px solid var(--glass-border);
+      transition: all 0.3s ease;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+    
+    .nav-links a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 500;
+      position: relative;
+      padding: 0.5rem 0;
+    }
+    
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--primary);
+      transition: width 0.3s ease;
+    }
+    
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+    
+    /* Theme toggle */
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: 1rem;
+    }
+    
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+    
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--glass);
+      border: 1px solid var(--glass-border);
+      transition: .4s;
+      border-radius: 24px;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: '';
+      height: 16px;
+      width: 16px;
+      left: 4px;
+      bottom: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      transition: .4s;
+      border-radius: 50%;
+    }
+    
+    input:checked + .slider {
+      background-color: var(--glass);
+    }
+    
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+    
+    /* Time widget */
+    .time-widget {
+      background: var(--glass);
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      border: 1px solid var(--glass-border);
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    
+    /* Intro Animation */
+    .intro {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      padding-top: 80px;
+    }
+    
+    .intro h1 {
+      font-size: clamp(2rem, 8vw, 5rem);
+      margin-bottom: 1rem;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .intro p {
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin-bottom: 2rem;
+    }
+    
+    .typing-text {
+      display: inline-block;
+      overflow: hidden;
+      border-right: 2px solid var(--primary);
+      white-space: nowrap;
+      animation: blink-caret 0.75s step-end infinite;
+    }
+    
+    .scroll-down {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .scroll-down span {
+      margin-bottom: 0.5rem;
+    }
+    
+    .scroll-down .arrow {
+      width: 20px;
+      height: 20px;
+      border-left: 2px solid var(--primary);
+      border-bottom: 2px solid var(--primary);
+      transform: rotate(-45deg);
+      animation: bounce 2s infinite;
+    }
+    
+    /* Sections */
+    section {
+      padding: 5rem 0;
+      position: relative;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .section-title {
+      font-size: 2.5rem;
+      margin-bottom: 3rem;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-align: center;
+    }
+    
+    /* Enhanced 3D Glass Cards */
+    .cards-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      perspective: 1000px;
+    }
+    
+    .card {
+      position: relative;
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 15px;
+      padding: 2rem;
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--card-shadow);
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform-style: preserve-3d;
+      min-height: 250px;
+      overflow: hidden;
+    }
+    
+    /* Card corner hover effect */
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(
+        circle at var(--mouse-x) var(--mouse-y),
+        var(--glass-highlight),
+        transparent 70%
+      );
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    
+    .card:hover::before {
+      opacity: 1;
+    }
+    
+    .card h2 {
+      margin-bottom: 1rem;
+      color: var(--primary);
+      position: relative;
+      z-index: 1;
+    }
+    
+    .card p, .card ul {
+      position: relative;
+      z-index: 1;
+    }
+    
+    /* Status Section */
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+    
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .status-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(0, 240, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    
+    .status-content h3 {
+      margin-bottom: 0.3rem;
+    }
+    
+    .status-content p {
+      opacity: 0.8;
+    }
+    
+    /* Games Section */
+    .games-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .game-card {
+      background: var(--glass);
+      border-radius: 10px;
+      padding: 1.5rem;
+      border: 1px solid var(--glass-border);
+      transition: transform 0.3s ease;
+    }
+    
+    .game-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .game-card h3 {
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+    
+    .game-card p {
+      opacity: 0.8;
+      font-size: 0.9rem;
+    }
+    
+    /* Socials Section */
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    
+    .social-link {
+      position: relative;
+      padding: 0.8rem 1.5rem;
+      border-radius: 50px;
+      background: rgba(0, 240, 255, 0.1);
+      color: var(--text);
+      text-decoration: none;
+      overflow: hidden;
+      transition: all 0.3s;
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .social-link:hover {
+      background: rgba(0, 240, 255, 0.2);
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 240, 255, 0.2);
+    }
+    
+    .social-link::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.4), transparent);
+      transition: 0.5s;
+      z-index: -1;
+    }
+    
+    .social-link:hover::before {
+      left: 100%;
+    }
+    
+    /* Music player */
+    .music-player {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      z-index: 1000;
+      background: var(--glass);
+      border-radius: 50px;
+      padding: 0.5rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+    }
+    
+    .music-toggle {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: rgba(0, 240, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 1px solid var(--glass-border);
+      transition: all 0.3s;
+    }
+    
+    .music-toggle:hover {
+      background: rgba(0, 240, 255, 0.2);
+    }
+    
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      margin-top: 3rem;
+      border-top: 1px solid var(--glass-border);
+    }
+    
+    /* Theme customizer (simplified) */
+    .theme-customizer {
+      position: fixed;
+      top: 50%;
+      right: -250px;
+      transform: translateY(-50%);
+      width: 250px;
+      background: var(--glass);
+      backdrop-filter: blur(10px);
+      padding: 1.5rem;
+      border-radius: 10px 0 0 10px;
+      border: 1px solid var(--glass-border);
+      border-right: none;
+      transition: right 0.3s ease;
+      z-index: 999;
+    }
+    
+    .theme-customizer.open {
+      right: 0;
+    }
+    
+    .theme-customizer h3 {
+      margin-bottom: 1rem;
+      color: var(--primary);
+    }
+    
+    .customizer-toggle {
+      position: absolute;
+      left: -40px;
+      top: 20px;
+      width: 40px;
+      height: 40px;
+      background: var(--glass);
+      border-radius: 10px 0 0 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 1px solid var(--glass-border);
+      border-right: none;
+    }
+    
+    .color-options {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 1rem;
+    }
+    
+    .color-option {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid var(--glass-border);
+    }
+    
+    /* Animations */
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0) rotate(-45deg);
+      }
+      40% {
+        transform: translateY(-10px) rotate(-45deg);
+      }
+      60% {
+        transform: translateY(-5px) rotate(-45deg);
+      }
+    }
+    
+    @keyframes blink-caret {
+      from, to { border-color: transparent }
+      50% { border-color: var(--primary); }
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav-links {
+        position: fixed;
+        top: 80px;
+        left: 0;
+        width: 100%;
+        background: var(--nav-bg);
+        flex-direction: column;
+        align-items: center;
+        padding: 1rem 0;
+        gap: 1rem;
+        transform: translateY(-150%);
+        transition: transform 0.3s ease;
+        border-bottom: 1px solid var(--glass-border);
+      }
+      
+      .nav-links.active {
+        transform: translateY(0);
+      }
+      
+      .mobile-menu-btn {
+        display: block;
+      }
+      
+      .time-widget, .theme-toggle span {
+        display: none;
+      }
+      
+      .cards-container, .status-grid, .games-list {
+        grid-template-columns: 1fr;
+      }
+      
+      .card {
+        min-height: auto;
+      }
+      
+      section {
+        padding: 3rem 0;
+      }
+      
+      .music-player {
+        bottom: 70px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      
+      .background-selector {
+        bottom: 120px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      
+      .theme-customizer {
+        width: 100%;
+        right: -100%;
+        border-radius: 0;
+      }
+      
+      .theme-customizer.open {
+        right: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="particles-container"></div>
+  
+  <!-- Progress bar -->
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+  
+  <nav>
+    <div class="logo">DoRaemon's Place</div>
+    <button class="mobile-menu-btn">☰</button>
+    <div class="nav-links">
+      <a href="#home">Home</a>
+      <a href="#status">Status</a>
+      <a href="#about">About</a>
+      <a href="#games">Games</a>
+      <a href="#socials">Socials</a>
+      <div class="theme-toggle">
+        <label class="toggle-switch">
+          <input type="checkbox" id="themeToggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="time-widget" id="timeWidget">
+        <span>🕒</span>
+        <span id="currentTime">Loading...</span>
+      </div>
+    </div>
+  </nav>
+  
+  <!-- Theme customizer -->
+  <div class="theme-customizer" id="themeCustomizer">
+    <div class="customizer-toggle" id="customizerToggle">
+      🎨
+    </div>
+    <h3>Theme Colors</h3>
+    <div class="color-options">
+      <div class="color-option" style="background: #00f0ff;" data-primary="#00f0ff" data-secondary="#ff00f0"></div>
+      <div class="color-option" style="background: #0066ff;" data-primary="#0066ff" data-secondary="#ff3366"></div>
+      <div class="color-option" style="background: #00ff88;" data-primary="#00ff88" data-secondary="#8800ff"></div>
+      <div class="color-option" style="background: #ff9900;" data-primary="#ff9900" data-secondary="#9900ff"></div>
+    </div>
+  </div>
+  
+  <!-- Background selector -->
+  <div class="background-selector">
+    <div class="bg-option" style="background: #0a0a15;" data-bg="default"></div>
+    <div class="bg-option" style="background: #000000;" data-bg="matrix"></div>
+    <div class="bg-option" style="background: #1a0033;" data-bg="space"></div>
+    <div class="bg-option" style="background: #003366;" data-bg="gradient"></div>
+  </div>
+  
+  <!-- Music player -->
+  <div class="music-player">
+    <div class="music-toggle" id="musicToggle">
+      ♫
+    </div>
+    <span>Background Music</span>
+    <audio id="bgMusic" loop>
+      <!-- Replace with your audio file -->
+      <source src="𝑺𝒕𝒆𝒓𝒆𝒐 𝒍𝒐𝒗𝒆.mp3" type="audio/mpeg">
+    </audio>
+  </div>
+  
+  <section class="intro" id="home">
+    <h1><span class="typing-text" id="typingText"></span></h1>
+    <p>Digital creator • Tech enthusiast • Professional vibe curator</p>
+    <div class="scroll-down">
+      <span>Scroll Down</span>
+      <div class="arrow"></div>
+    </div>
+  </section>
+  
+  <div class="container">
+    <!-- Status Section -->
+    <section id="status">
+      <h2 class="section-title">Current Status</h2>
+      <div class="status-grid">
+        <div class="status-item">
+          <div class="status-icon">🎮</div>
+          <div class="status-content">
+            <h3>Now Playing</h3>
+            <p id="now-playing">Loading game...</p>
+          </div>
+        </div>
+        <div class="status-item">
+          <div class="status-icon">🎵</div>
+          <div class="status-content">
+            <h3>Listening To</h3>
+            <p id="now-listening">Loading music...</p>
+          </div>
+        </div>
+        <div class="status-item">
+          <div class="status-icon">💻</div>
+          <div class="status-content">
+            <h3>Currently</h3>
+            <p id="current-status">Loading status...</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- About Section -->
+    <section id="about">
+      <h2 class="section-title">About Me</h2>
+      <div class="cards-container">
+        <div class="card">
+          <h2>Who Am I?</h2>
+          <p>I'm a digital enthusiast who loves exploring the intersection of technology and creativity. When I'm not online, you can find me reading sci-fi, playing indie games, or experimenting with new hobbies.</p>
+        </div>
+        
+        <div class="card">
+          <h2>Interests</h2>
+          <ul style="list-style: none;">
+            <li>• Gaming</li>
+            <li>• Music</li>
+            <li>• Editing</li>
+            <li>• Exploiting</li>
+            <li>• Meeting people</li>
+          </ul>
+        </div>
+        
+        <div class="card">
+          <h2>Currently Learning</h2>
+          <p>Always exploring something new. Right now it's:</p>
+          <ul style="list-style: none; margin-top: 0.5rem;">
+            <li>• Editing in CapCut</li>
+            <li>• Coding HTML/CSS/JS</li>
+            <li>• For exams</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Games Section -->
+    <section id="games">
+      <h2 class="section-title">Games I'm Playing</h2>
+      <div class="games-list">
+        <div class="game-card">
+          <h3>Roblox</h3>
+          <p>A vast online platform with user-generated content and a creative ecosystem.</p>
+        </div>
+        <div class="game-card">
+          <h3>OPPW4</h3>
+          <p>A Musou game that unleashes the epic scale and character roster of One Piece.</p>
+        </div>
+        <div class="game-card">
+          <h3>DMC4SE</h3>
+          <p>A Stylish Action Game with a Legacy.</p>
+        </div>
+        <div class="game-card">
+          <h3>Dead Cells</h3>
+          <p>A Roguelike-Metroidvania with Thrilling Combat.</p>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Socials Section -->
+    <section id="socials">
+      <h2 class="section-title">Find Me Online</h2>
+      <div class="social-links">
+        <a href="https://twitter.com/you" class="social-link" target="_blank">
+          <span>🐦</span> Twitter
+        </a>
+        <a href="https://github.com/you" class="social-link" target="_blank">
+          <span>💻</span> GitHub
+        </a>
+        <a href="https://instagram.com/you" class="social-link" target="_blank">
+          <span>📸</span> Instagram
+        </a>
+        <a href="https://steamcommunity.com/id/you" class="social-link" target="_blank">
+          <span>🎮</span> Steam
+        </a>
+        <a href="https://letterboxd.com/you" class="social-link" target="_blank">
+          <span>🎬</span> Letterboxd
+        </a>
+        <a href="https://open.spotify.com/user/you" class="social-link" target="_blank">
+          <span>🎵</span> Spotify
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <p>© 2023 yourname.lol — Made with 💙 and CSS gradients</p>
+  </footer>
+
+  <!-- WebGL Matrix Rain Effect (hidden by default) -->
+  <canvas id="matrixCanvas" style="position:fixed;top:0;left:0;z-index:-2;opacity:0;pointer-events:none;"></canvas>
+
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script>
+    // Initialize particles.js with fixed interaction
+    document.addEventListener('DOMContentLoaded', function() {
+      // Default particles config
+      const particlesConfig = {
+        particles: {
+          number: { value: 80, density: { enable: true, value_area: 800 } },
+          color: { value: "#00f0ff" },
+          shape: { type: "circle" },
+          opacity: { value: 0.5, random: false },
+          size: { value: 3, random: true },
+          line_linked: { 
+            enable: true, 
+            distance: 150, 
+            color: "#00f0ff", 
+            opacity: 0.2, 
+            width: 1 
+          },
+          move: {
+            enable: true,
+            speed: 2,
+            direction: "none",
+            out_mode: "out"
+          }
+        },
+        interactivity: {
+          detect_on: "window",
+          events: {
+            onhover: { enable: true, mode: "grab" },
+            onclick: { enable: true, mode: "push" }
+          },
+          modes: {
+            grab: { distance: 140, line_linked: { opacity: 1 } },
+            push: { particles_nb: 4 }
+          }
+        },
+        retina_detect: true
+      };
+      
+      particlesJS("particles-container", particlesConfig);
+
+      // Mobile menu toggle
+      const menuBtn = document.querySelector('.mobile-menu-btn');
+      const navLinks = document.querySelector('.nav-links');
+      
+      menuBtn.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+      });
+      
+      // Close mobile menu when clicking a link
+      document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', () => {
+          navLinks.classList.remove('active');
+        });
+      });
+      
+      // Theme toggle
+      const themeToggle = document.getElementById('themeToggle');
+      const currentTheme = localStorage.getItem('theme') || 'dark';
+      
+      if (currentTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        themeToggle.checked = true;
+      }
+      
+      themeToggle.addEventListener('change', function() {
+        if (this.checked) {
+          document.documentElement.setAttribute('data-theme', 'light');
+          localStorage.setItem('theme', 'light');
+        } else {
+          document.documentElement.removeAttribute('data-theme');
+          localStorage.setItem('theme', 'dark');
+        }
+      });
+      
+      // Time widget
+      function updateTime() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        document.getElementById('currentTime').textContent = timeString;
+      }
+      
+      updateTime();
+      setInterval(updateTime, 1000);
+      
+      // Typing animation
+      const typingText = document.getElementById('typingText');
+      const texts = ["Hi there! 👋", "I'm Sumit", "Welcome to my space"];
+      let textIndex = 0;
+      let charIndex = 0;
+      let isDeleting = false;
+      
+      function type() {
+        const currentText = texts[textIndex];
+        
+        if (isDeleting) {
+          typingText.textContent = currentText.substring(0, charIndex - 1);
+          charIndex--;
+        } else {
+          typingText.textContent = currentText.substring(0, charIndex + 1);
+          charIndex++;
+        }
+        
+        if (!isDeleting && charIndex === currentText.length) {
+          isDeleting = true;
+          setTimeout(type, 2000);
+        } else if (isDeleting && charIndex === 0) {
+          isDeleting = false;
+          textIndex = (textIndex + 1) % texts.length;
+          setTimeout(type, 500);
+        } else {
+          const speed = isDeleting ? 100 : 150;
+          setTimeout(type, speed);
+        }
+      }
+      
+      setTimeout(type, 1000);
+      
+      // Progress bar
+      window.addEventListener('scroll', function() {
+        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrollProgress = (scrollTop / scrollHeight) * 100;
+        document.getElementById('progressBar').style.width = scrollProgress + '%';
+      });
+      
+      // Music toggle
+      const musicToggle = document.getElementById('musicToggle');
+      const bgMusic = document.getElementById('bgMusic');
+      
+      musicToggle.addEventListener('click', function() {
+        if (bgMusic.paused) {
+          bgMusic.play();
+          musicToggle.textContent = '❚❚';
+        } else {
+          bgMusic.pause();
+          musicToggle.textContent = '♫';
+        }
+      });
+      
+      // Background selector
+      const bgOptions = document.querySelectorAll('.bg-option');
+      
+      bgOptions.forEach(option => {
+        option.addEventListener('click', function() {
+          const bgType = this.getAttribute('data-bg');
+          const particlesContainer = document.getElementById('particles-container');
+          const matrixCanvas = document.getElementById('matrixCanvas');
+          
+          // Reset all backgrounds
+          particlesContainer.style.opacity = '0';
+          matrixCanvas.style.opacity = '0';
+          
+          // Enable selected background
+          switch(bgType) {
+            case 'default':
+              particlesContainer.style.opacity = '0.7';
+              particlesJS("particles-container", particlesConfig);
+              break;
+            case 'matrix':
+              initMatrixRain();
+              matrixCanvas.style.opacity = '1';
+              break;
+            case 'space':
+              // You would replace this with a space-themed particle config
+              particlesContainer.style.opacity = '0.7';
+              particlesJS("particles-container", {
+                particles: {
+                  number: { value: 100, density: { enable: true, value_area: 800 } },
+                  color: { value: "#ffffff" },
+                  shape: { type: "circle" },
+                  opacity: { value: 0.8, random: true },
+                  size: { value: 2, random: true },
+                  line_linked: { enable: false },
+                  move: {
+                    enable: true,
+                    speed: 1,
+                    direction: "none",
+                    random: true,
+                    straight: false,
+                    out_mode: "out"
+                  }
+                }
+              });
+              break;
+            case 'gradient':
+              // You would replace this with a gradient animation
+              particlesContainer.style.opacity = '0.7';
+              particlesJS("particles-container", {
+                particles: {
+                  number: { value: 50, density: { enable: true, value_area: 800 } },
+                  color: { value: ["#00f0ff", "#ff00f0", "#00ff88"] },
+                  shape: { type: "circle" },
+                  opacity: { value: 0.7, random: true },
+                  size: { value: 4, random: true },
+                  line_linked: { 
+                    enable: true, 
+                    distance: 200, 
+                    color: "#ffffff", 
+                    opacity: 0.2, 
+                    width: 1 
+                  },
+                  move: {
+                    enable: true,
+                    speed: 1,
+                    direction: "none",
+                    random: true,
+                    straight: false,
+                    out_mode: "out"
+                  }
+                }
+              });
+              break;
+          }
+        });
+      });
+      
+      // Theme customizer
+      const customizerToggle = document.getElementById('customizerToggle');
+      const themeCustomizer = document.getElementById('themeCustomizer');
+      
+      customizerToggle.addEventListener('click', function() {
+        themeCustomizer.classList.toggle('open');
+      });
+      
+      const colorOptions = document.querySelectorAll('.color-option');
+      
+      colorOptions.forEach(option => {
+        option.addEventListener('click', function() {
+          const primary = this.getAttribute('data-primary');
+          const secondary = this.getAttribute('data-secondary');
+          
+          document.documentElement.style.setProperty('--primary', primary);
+          document.documentElement.style.setProperty('--secondary', secondary);
+          
+          // Update particles color if visible
+          if (document.getElementById('particles-container').style.opacity !== '0') {
+            particlesJS("particles-container", {
+              ...particlesConfig,
+              particles: {
+                ...particlesConfig.particles,
+                color: { value: primary },
+                line_linked: { 
+                  ...particlesConfig.particles.line_linked,
+                  color: primary
+                }
+              }
+            });
+          }
+        });
+      });
+      
+      // Lazy load animations with IntersectionObserver
+      const sections = document.querySelectorAll('section');
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.1 });
+      
+      sections.forEach(section => {
+        observer.observe(section);
+      });
+      
+      // Status updates
+      const statuses = [
+        "Coding something cool",
+        "Designing new experiences",
+        "Listening to music",
+        "Reading tech articles",
+        "Planning world domination",
+        "Drinking coffee",
+        "Thinking about pizza",
+        "Watching YouTube",
+        "Taking a break"
+      ];
+      
+      const games = [
+        "Stardew Valley",
+        "Hades",
+        "Factorio",
+        "Celeste",
+        "Terraria",
+        "Disco Elysium",
+        "Outer Wilds",
+        "Slay the Spire"
+      ];
+      
+      const music = [
+        "Daft Punk - Random Access Memories",
+        "Home - Odyssey",
+        "Carpenter Brut - Leather Teeth",
+        "Tycho - Dive",
+        "The Midnight - Endless Summer",
+        "Porter Robinson - Nurture",
+        "Madeon - Good Faith",
+        "Lane 8 - Brightest Lights"
+      ];
+      
+      function updateStatus() {
+        const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+        const randomGame = games[Math.floor(Math.random() * games.length)];
+        const randomMusic = music[Math.floor(Math.random() * music.length)];
+        
+        document.getElementById('current-status').textContent = randomStatus;
+        document.getElementById('now-playing').textContent = randomGame;
+        document.getElementById('now-listening').textContent = randomMusic;
+      }
+      
+      updateStatus();
+      setInterval(updateStatus, 5000);
+      
+      // Enhanced 3D card effect with corner hover
+      const cards = document.querySelectorAll('.card');
+      
+      cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          
+          // Calculate position relative to card (0-1)
+          const relX = x / rect.width;
+          const relY = y / rect.height;
+          
+          // Set custom properties for the gradient position
+          card.style.setProperty('--mouse-x', `${relX * 100}%`);
+          card.style.setProperty('--mouse-y', `${relY * 100}%`);
+          
+          // 3D tilt effect based on mouse position
+          const tiltX = (relY - 0.5) * 20;
+          const tiltY = (0.5 - relX) * 20;
+          const depth = 15;
+          const cornerX = relX > 0.5 ? 1 : -1;
+          const cornerY = relY > 0.5 ? 1 : -1;
+          const cornerEffect = 5;
+          
+          card.style.transform = `
+            perspective(1000px)
+            rotateX(${tiltX}deg)
+            rotateY(${tiltY}deg)
+            translateZ(${depth}px)
+            translateX(${cornerX * cornerEffect}px)
+            translateY(${cornerY * cornerEffect}px)
+          `;
+          
+          // Shadow effect
+          card.style.boxShadow = `
+            ${tiltY * -2}px ${tiltX * 2}px 30px rgba(0, 240, 255, 0.3)
+          `;
+        });
+        
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
+          card.style.boxShadow = 'var(--card-shadow)';
+        });
+      });
+      
+      // Matrix rain effect
+      function initMatrixRain() {
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+        const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const nums = '0123456789';
+        
+        const alphabet = katakana + latin + nums;
+        
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        
+        const rainDrops = [];
+        
+        for (let x = 0; x < columns; x++) {
+          rainDrops[x] = 1;
+        }
+        
+        const draw = () => {
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          
+          ctx.fillStyle = '#00f0ff';
+          ctx.font = fontSize + 'px monospace';
+          
+          for (let i = 0; i < rainDrops.length; i++) {
+            const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+            ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+            
+            if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+              rainDrops[i] = 0;
+            }
+            rainDrops[i]++;
+          }
+        };
+        
+        const interval = setInterval(draw, 30);
+        
+        // Cleanup function
+        return () => {
+          clearInterval(interval);
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        };
+      }
+      
+      // Handle window resize
+      window.addEventListener('resize', function() {
+        const canvas = document.getElementById('matrixCanvas');
+        if (canvas.style.opacity === '1') {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        }
+      });
+    });
+  </script>
+</body>
+</html>
