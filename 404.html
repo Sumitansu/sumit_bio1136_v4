@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 Not Found | DoRaemon's Place</title>
+  <link rel="icon" type="image/png" href="logo for speedabraker.jpg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&display=swap');
+    
+    :root {
+      --primary: #00f0ff;
+      --secondary: #ff00f0;
+      --bg: #0a0a15;
+      --text: #ffffff;
+      --glass: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --glass-highlight: rgba(255, 255, 255, 0.15);
+      --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Light mode variables */
+    [data-theme="light"] {
+      --primary: #0066ff;
+      --secondary: #ff3366;
+      --bg: #f5f5ff;
+      --text: #0a0a15;
+      --glass: rgba(0, 0, 0, 0.05);
+      --glass-border: rgba(0, 0, 0, 0.1);
+      --glass-highlight: rgba(0, 0, 0, 0.15);
+      --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      overflow: hidden;
+      transition: background 0.5s ease, color 0.3s ease;
+    }
+    
+    #particles-404 {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.7;
+    }
+    
+    .error-container {
+      max-width: 800px;
+      padding: 2rem;
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 15px;
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--card-shadow);
+      margin: 2rem;
+      transform: translateY(20px);
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.3s;
+    }
+    
+    .error-code {
+      font-size: 8rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 1rem;
+      line-height: 1;
+    }
+    
+    .error-title {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .error-message {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      opacity: 0.9;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .home-link {
+      display: inline-block;
+      padding: 0.8rem 1.8rem;
+      border-radius: 50px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      color: var(--bg);
+      text-decoration: none;
+      font-weight: 500;
+      transition: transform 0.3s, box-shadow 0.3s;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    
+    .home-link::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--secondary), var(--primary));
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: -1;
+    }
+    
+    .home-link:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0, 240, 255, 0.3);
+    }
+    
+    .home-link:hover::before {
+      opacity: 1;
+    }
+    
+    .astronaut {
+      width: 150px;
+      height: 150px;
+      margin-bottom: 2rem;
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-20px);
+      }
+    }
+    
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Theme toggle */
+    .theme-toggle-404 {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+    
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--glass);
+      border: 1px solid var(--glass-border);
+      transition: .4s;
+      border-radius: 24px;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: '';
+      height: 16px;
+      width: 16px;
+      left: 4px;
+      bottom: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      transition: .4s;
+      border-radius: 50%;
+    }
+    
+    input:checked + .slider {
+      background-color: var(--glass);
+    }
+    
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+    
+    @media (max-width: 768px) {
+      .error-code {
+        font-size: 5rem;
+      }
+      
+      .error-title {
+        font-size: 1.5rem;
+      }
+      
+      .error-message {
+        font-size: 1rem;
+      }
+      
+      .astronaut {
+        width: 100px;
+        height: 100px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="particles-404"></div>
+  
+  <div class="theme-toggle-404">
+    <label class="toggle-switch">
+      <input type="checkbox" id="themeToggle">
+      <span class="slider"></span>
+    </label>
+  </div>
+  
+  <div class="error-container">
+    <svg class="astronaut" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+      <path fill="var(--primary)" d="M256 0c5.4 0 10.7 .2 16 .6V43c-5.3-.4-10.6-.6-16-.6s-10.7 .2-16 .6V.6c5.3-.4 10.6-.6 16-.6zm-16 63.6V16.4C127.7 30.6 32 133 32 256c0 123.7 100.3 224 224 224s224-100.3 224-224c0-123-95.7-225.4-208-239.6V63.6c89.7 16.1 160 94 160 192.4c0 106-86 192-192 192S64 362 64 256c0-98.4 70.3-176.3 160-192.4zM160 256a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm192-32a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM128 288c0 17.7-14.3 32-32 32s-32-14.3-32-32s14.3-32 32-32s32 14.3 32 32zm320 0c0 17.7-14.3 32-32 32s-32-14.3-32-32s14.3-32 32-32s32 14.3 32 32z"/>
+    </svg>
+    <h1 class="error-code">404</h1>
+    <h2 class="error-title">Lost in Space</h2>
+    <p class="error-message">The page you're looking for doesn't exist or has been moved. Meanwhile, here's an astronaut to keep you company.</p>
+    <a href="/" class="home-link">Return to Home</a>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize particles
+      particlesJS("particles-404", {
+        particles: {
+          number: { value: 60, density: { enable: true, value_area: 800 } },
+          color: { value: "#00f0ff" },
+          shape: { type: "circle" },
+          opacity: { value: 0.5, random: false },
+          size: { value: 3, random: true },
+          line_linked: { 
+            enable: true, 
+            distance: 150, 
+            color: "#00f0ff", 
+            opacity: 0.2, 
+            width: 1 
+          },
+          move: {
+            enable: true,
+            speed: 2,
+            direction: "none",
+            out_mode: "out"
+          }
+        },
+        interactivity: {
+          detect_on: "window",
+          events: {
+            onhover: { enable: true, mode: "grab" },
+            onclick: { enable: true, mode: "push" }
+          },
+          modes: {
+            grab: { distance: 140, line_linked: { opacity: 1 } },
+            push: { particles_nb: 4 }
+          }
+        },
+        retina_detect: true
+      });
+      
+      // Theme toggle
+      const themeToggle = document.getElementById('themeToggle');
+      const currentTheme = localStorage.getItem('theme') || 'dark';
+      
+      if (currentTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        themeToggle.checked = true;
+      }
+      
+      themeToggle.addEventListener('change', function() {
+        if (this.checked) {
+          document.documentElement.setAttribute('data-theme', 'light');
+          localStorage.setItem('theme', 'light');
+        } else {
+          document.documentElement.removeAttribute('data-theme');
+          localStorage.setItem('theme', 'dark');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
